@@ -10,13 +10,12 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     UV_SYSTEM_PYTHON=1
 
-# Instalacja zależności
-COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-dev
-
-# Kopiowanie kodu aplikacji
+# Kopiowanie kodu aplikacji i zależności
+COPY pyproject.toml uv.lock README.md ./
 COPY packages/ ./packages/
-COPY README.md ./
+
+# Instalacja pakietów
+RUN uv sync --frozen --no-dev
 
 # Przygotowanie katalogów na dane i pliki out
 RUN mkdir -p dane out kopie

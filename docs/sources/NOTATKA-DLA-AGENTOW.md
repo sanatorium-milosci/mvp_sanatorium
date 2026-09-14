@@ -193,3 +193,16 @@ lokalne środowiska, narzędzia pomocnicze oraz dane logowania nie są części�
 4. **Baza produkcyjna**:
    - Baza `dane/sanatoria.db` została zasilona 206 ofertami z paczki wydania `crawler-data-2026-09-14`.
    - Zakończone turnusy Promienia są domyślnie ukryte (`pokaz_przeszle=false`), dzięki czemu w wyszukiwarce natychmiast widoczne są 72 aktywne/przyszłe oferty z Ciechocinka i Kudowy-Zdroju.
+
+## 5. Aktualizacja wdrożenia i pełna integracja z frontendem Claude Code
+
+1. **Pomyślnie scalono najnowsze ulepszenia frontendu od Claude Code do `main`**:
+   - Claude dodał kontrolkę sortowania wyników (`sortuj`) oraz checkbox „Pokaż też zakończone terminy” (`pokaz_przeszle`) w `SearchFilters.tsx`.
+   - Frontend idealnie współpracuje z kontraktem backendu — testy przechodzą w 100%.
+2. **Wieloetapowy build Dockera (`deploy/`)**:
+   - Dodano `deploy/Dockerfile.caddy`, który automatycznie kompiluje frontend React/Vite w kontenerze Node 22 i przekazuje pliki produkcyjne do Caddy (`/srv/web`).
+   - Zaktualizowano `deploy/docker-compose.yml` — stos uruchamia się bezpośrednio bez konieczności posiadania Node.js / npm na maszynie hosta.
+   - Poprawiono kolejność budowania w `deploy/Dockerfile.api` (kopiowanie `README.md` przed `uv sync`).
+3. **Weryfikacja E2E kontenerów**:
+   - Przetestowano uruchomienie pełnego stosu kontenerowego pod Caddy z reverse proxy do FastAPI i zmapowaną bazą `dane/sanatoria.db`.
+   - Żywe zapytania `/healthz`, `/api/v1/oferty` oraz serwowanie aplikacji SPA działają bezbłędnie zwracając 72 aktywne turnusy.

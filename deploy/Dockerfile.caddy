@@ -1,0 +1,23 @@
+# deploy/Dockerfile.caddy
+# Wieloetapowy build: kompilacja frontendu Vite (Node.js) + serwowanie przez Caddy
+
+# Etap 1: Budowanie frontendu React + Vite
+FROM docker.io/library/node:22-alpine AS builder
+
+WORKDIR /app
+
+# Instalacja zależności z lockfile
+COPY apps/web/package*.json ./
+RUN npm ci
+
+# Kopiowanie źródeł aplikacji frontendowej i kompilacja
+COPY apps/web/ ./
+RUN npm run build
+
+# Etap 2: Caddy z konfiguracją i skompilowanym frontendem
+FROM docker.io/library/caddy:2-alpine
+
+COPY deploy/Caddyfile /etc/caddy/Caddyfile
+COPY --from=builder /app/dist /srv/web
+
+EXPOSE 80 443

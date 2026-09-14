@@ -20,7 +20,9 @@ services:
       start_period: 10s
 
   caddy:
-    image: caddy:2-alpine
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.caddy
     container_name: sanatoria_caddy
     restart: unless-stopped
     ports:
@@ -30,7 +32,6 @@ services:
       - DOMAIN=${DOMAIN:-localhost}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - ../apps/web/dist:/srv/web:ro
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
