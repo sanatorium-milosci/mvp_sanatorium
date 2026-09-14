@@ -55,6 +55,7 @@ def pobierz_oferty(
         bool | None, Query(description="Dostępność dla osób na wózkach")
     ] = None,
     sortuj: Annotated[str, Query(description="Opcja sortowania")] = "najnowsze",
+    pokaz_przeszle: Annotated[bool, Query(description="Czy pokazywać zakończone turnusy")] = False,
     strona: Annotated[int, Query(ge=1, description="Numer strony")] = 1,
     na_stronie: Annotated[int, Query(ge=1, le=100, description="Liczba ofert na stronę")] = 20,
 ) -> ListaOfertOdpowiedzDTO:
@@ -89,6 +90,7 @@ def pobierz_oferty(
         strona=strona,
         na_stronie=na_stronie,
         tylko_aktywne=True,
+        tylko_przyszle=not pokaz_przeszle,
     )
 
     elementy_raw, razem = repo.szukaj_ofert(filtry)

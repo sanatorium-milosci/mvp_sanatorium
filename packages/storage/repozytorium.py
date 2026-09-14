@@ -38,6 +38,7 @@ class FiltryOfert:
     strona: int = 1
     na_stronie: int = 20
     tylko_aktywne: bool = True
+    tylko_przyszle: bool = True
 
 
 def _wiersz_na_slownik(row: dict) -> dict:
@@ -283,6 +284,11 @@ class RepozytoriumOfert:
         if filtry.termin_do:
             warunki.append("(termin_do IS NULL OR termin_do <= ?)")
             parametry.append(filtry.termin_do.isoformat())
+
+        if filtry.tylko_przyszle:
+            dzisiaj = date.today().isoformat()
+            warunki.append("(termin_do IS NULL OR termin_do >= ?)")
+            parametry.append(dzisiaj)
 
         if filtry.tylko_dostepne:
             warunki.append("dostepny = 1")

@@ -56,6 +56,7 @@ Przeszukiwanie i filtrowanie ofert z paginacją.
 | `zwierzeta` | bool | brak | Możliwość pobytu ze zwierzętami |
 | `dostepny_dla_wozka`| bool | brak | Dostępność dla osób na wózkach |
 | `sortuj` | string | `najnowsze` | Opcje sortowania: `cena_asc`, `cena_desc`, `dni_asc`, `dni_desc`, `termin_od_asc`, `najnowsze` |
+| `pokaz_przeszle` | bool | `false` | Gdy `false` (domyślnie), wyklucza turnusy, których termin_do minął |
 | `strona` | int | `1` | Numer strony (od 1) |
 | `na_stronie` | int | `20` | Liczba ofert na stronę (1–100) |
 

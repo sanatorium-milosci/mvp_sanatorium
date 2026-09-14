@@ -109,7 +109,29 @@ def klient_testowy() -> TestClient:
         ),
     )
 
-    repo.upsert_oferty("demo", [oferta1, oferta2])
+    oferta_przeszla = Oferta(
+        adapter="demo",
+        zrodlo_id="pobyt-przeszly",
+        osrodek_klucz="demo-ustron",
+        osrodek_nazwa="Sanatorium Ustroń",
+        miejscowosc="Ustroń",
+        nazwa_pakietu="Turnus z zeszłego roku",
+        liczba_dni=7,
+        termin_od=date(2020, 1, 1),
+        termin_do=date(2020, 1, 8),
+        dostepny=True,
+        cena=Decimal("999.00"),
+        jednostka_ceny=JednostkaCeny.TURNUS_OSOBA,
+        zrodlo=Zrodlo(
+            url="https://example.com/past",
+            pobrano_o=datetime.now(UTC),
+            adapter="demo",
+            wersja_adaptera="0.1.0",
+            hash_tresci="3" * 64,
+        ),
+    )
+
+    repo.upsert_oferty("demo", [oferta1, oferta2, oferta_przeszla])
 
     app.dependency_overrides[pobierz_repozytorium] = lambda: repo
     try:
@@ -125,7 +147,7 @@ def test_api_zdrowie(klient_testowy: TestClient):
     dane = odp.json()
     assert dane["status"] == "ok"
     assert dane["baza_ok"] is True
-    assert dane["aktywne_oferty"] == 2
+    assert dane["aktywne_oferty"] == 3
 
     # Alias /healthz
     odp_alias = klient_testowy.get("/healthz")
@@ -134,10 +156,17 @@ def test_api_zdrowie(klient_testowy: TestClient):
 
 
 def test_api_lista_ofert_i_filtry(klient_testowy: TestClient):
+    # Domyślnie przeszłe turnusy są ukryte (razem == 2)
     odp = klient_testowy.get("/api/v1/oferty")
     assert odp.status_code == 200
     dane = odp.json()
     assert dane["stronicowanie"]["razem"] == 2
+    assert len(dane["elementy"]) == 2
+
+    # Z flagą pokaz_przeszle=true widoczne są 3 oferty
+    odp_all = klient_testowy.get("/api/v1/oferty?pokaz_przeszle=true")
+    assert odp_all.status_code == 200
+    assert odp_all.json()["stronicowanie"]["razem"] == 3
     assert len(dane["elementy"]) == 2
 
     # Sprawdzenie kalkulacji kosztu całkowitego
@@ -184,4 +213,4 @@ def test_api_filtry_metadane(klient_testowy: TestClient):
     dane = odp.json()
     assert "Ustroń" in dane["miejscowosci"]
     assert "Kołobrzeg" in dane["miejscowosci"]
-    assert dane["liczba_ofert_razem"] == 2
+    assert dane["liczba_ofert_razem"] == 3
