@@ -1,5 +1,12 @@
 import type { FiltryWyszukiwania, Sortowanie } from '../api'
-import { PROFILE_LECZNICZE_ETYKIETY, WYZYWIENIE_ETYKIETY, type ProfilLeczniczy, type Wyzywienie } from '../types/oferta'
+import {
+  JEDNOSTKA_CENY_ETYKIETY,
+  PROFILE_LECZNICZE_ETYKIETY,
+  WYZYWIENIE_ETYKIETY,
+  type JednostkaCeny,
+  type ProfilLeczniczy,
+  type Wyzywienie,
+} from '../types/oferta'
 
 interface Props {
   filtry: FiltryWyszukiwania
@@ -10,6 +17,7 @@ interface Props {
 
 const PROFILE_OPCJE = Object.entries(PROFILE_LECZNICZE_ETYKIETY) as [ProfilLeczniczy, string][]
 const WYZYWIENIE_OPCJE = Object.entries(WYZYWIENIE_ETYKIETY) as [Wyzywienie, string][]
+const JEDNOSTKA_CENY_OPCJE = Object.entries(JEDNOSTKA_CENY_ETYKIETY) as [JednostkaCeny, string][]
 
 const SORTOWANIE_ETYKIETY: Record<Sortowanie, string> = {
   najnowsze: 'Najnowsze',
@@ -91,6 +99,24 @@ export function SearchFilters({ filtry, miejscowosci, onZmiana, onWyczysc }: Pro
       </div>
 
       <div className="filtry__pole">
+        <label htmlFor="jednostka_ceny">Jednostka ceny</label>
+        <select
+          id="jednostka_ceny"
+          value={filtry.jednostka_ceny ?? ''}
+          onChange={(e) =>
+            onZmiana({ ...filtry, jednostka_ceny: (e.target.value || undefined) as JednostkaCeny | undefined })
+          }
+        >
+          <option value="">Dowolna</option>
+          {JEDNOSTKA_CENY_OPCJE.map(([wartosc, etykieta]) => (
+            <option key={wartosc} value={wartosc}>
+              {etykieta}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="filtry__pole">
         <label htmlFor="cena_max">Cena maks. (PLN)</label>
         <input
           id="cena_max"
@@ -103,6 +129,12 @@ export function SearchFilters({ filtry, miejscowosci, onZmiana, onWyczysc }: Pro
             onZmiana({ ...filtry, cena_max: e.target.value ? Number(e.target.value) : undefined })
           }
         />
+        {!filtry.jednostka_ceny && (
+          <p className="filtry__podpowiedz">
+            Bez wybranej jednostki limit porównuje kwoty za osobodobę, turnus i cały pokój razem — to nie ten sam
+            koszt. Wybierz jednostkę, żeby porównywać uczciwie.
+          </p>
+        )}
       </div>
 
       <div className="filtry__pole">
@@ -128,6 +160,9 @@ export function SearchFilters({ filtry, miejscowosci, onZmiana, onWyczysc }: Pro
             </option>
           ))}
         </select>
+        {(filtry.sortuj === 'cena_asc' || filtry.sortuj === 'cena_desc') && !filtry.jednostka_ceny && (
+          <p className="filtry__podpowiedz">Sortowanie po cenie miesza różne jednostki — dla uczciwego porównania wybierz jednostkę ceny.</p>
+        )}
       </div>
 
       <div className="filtry__pole filtry__pole--checkbox">
