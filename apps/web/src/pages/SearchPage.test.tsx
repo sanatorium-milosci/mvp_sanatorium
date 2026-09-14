@@ -62,4 +62,17 @@ describe('SearchPage', () => {
 
     await waitFor(() => expect(screen.getByText(/Znaleziono 6 ofert/)).toBeInTheDocument())
   })
+
+  it('domyślnie ukrywa zakończone terminy i pokazuje je po zaznaczeniu checkboxa', async () => {
+    const user = userEvent.setup()
+    renderSearchPage()
+
+    await waitFor(() => expect(screen.getByText(/Znaleziono 6 ofert/)).toBeInTheDocument())
+    expect(screen.queryByText('Turnus letni 7 dni (zakończony)')).not.toBeInTheDocument()
+
+    await user.click(screen.getByLabelText('Pokaż też zakończone terminy'))
+
+    await waitFor(() => expect(screen.getByText(/Znaleziono 7 ofert/)).toBeInTheDocument())
+    expect(screen.getByText('Turnus letni 7 dni (zakończony)')).toBeInTheDocument()
+  })
 })

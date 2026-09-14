@@ -327,4 +327,60 @@ export const OFERTY_MOCK: Oferta[] = [
       pobrano_o: teraz(),
     },
   },
+  {
+    // Zakończony turnus — celowo w przeszłości, żeby sprawdzić domyślne
+    // ukrywanie ofert po termin_do (parametr pokaz_przeszle, wzorem
+    // backendu: patrz docs/api/specyfikacja.md).
+    id: 7,
+    adapter: 'demo',
+    zrodlo_id: 'turnus-lato-zakonczony',
+    osrodek: {
+      klucz: 'uzdrowisko-ustron-rownica',
+      nazwa: 'Uzdrowisko Ustroń — Sanatorium Równica',
+      miejscowosc: 'Ustroń',
+      wojewodztwo: 'śląskie',
+      nip: '5480000000',
+      telefon: '+48 33 854 00 00',
+    },
+    pakiet: {
+      nazwa: 'Turnus letni 7 dni (zakończony)',
+      liczba_dni: 7,
+      liczba_nocy: 6,
+      termin_od: '2026-07-20',
+      termin_do: '2026-07-27',
+      dostepny: false,
+    },
+    cena: {
+      wartosc: '2200.00',
+      waluta: 'PLN',
+      jednostka: 'turnus_osoba',
+      cena_od: false,
+      szacowany_koszt_calkowity: '2200.00',
+      doplata_jedynka: null,
+      oplata_klimatyczna_doba: '2.50',
+    },
+    standard: {
+      wyzywienie: 'fb',
+      typ_pokoju: 'dwuosobowy',
+      liczba_zabiegow_dziennie: 3,
+      zabiegi: ['Kąpiel borowinowa', 'Masaż suchy'],
+      opieka_lekarska: true,
+    },
+    profile: ['reumatologiczny'],
+    udogodnienia: {
+      winda: true,
+      dostepny_dla_wozka: true,
+      parking: true,
+      parking_platny: false,
+      wifi: true,
+      basen: true,
+      zwierzeta: false,
+      odleglosc_od_centrum_m: 800,
+    },
+    linki: {
+      url_rezerwacji: null,
+      url_zrodla: 'https://uzdrowisko-ustron.pl/oferta/turnus-lato-zakonczony',
+      pobrano_o: teraz(),
+    },
+  },
 ]
