@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 from datetime import date
+from decimal import Decimal
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -134,6 +135,17 @@ class ZdrowieOdpowiedzDTO(BaseModel):
     ostatni_import: str | None = None
 
 
+def formatuj_cene(kwota: Any) -> str | None:
+    """Format kwoty do postaci tekstowej z 2 miejscami po przecinku."""
+    if kwota is None or str(kwota).strip() == "":
+        return None
+    try:
+        dec = Decimal(str(kwota))
+        return f"{dec:.2f}"
+    except Exception:
+        return str(kwota)
+
+
 def buduj_oferte_dto(dane: dict[str, Any]) -> OfertaSzczegolyDTO:
     """Konwertuje słownik rekordu z repozytorium na strukturę OfertaSzczegolyDTO."""
     szacowany = oblicz_szacowany_koszt(
@@ -166,13 +178,13 @@ def buduj_oferte_dto(dane: dict[str, Any]) -> OfertaSzczegolyDTO:
             dostepny=dane.get("dostepny"),
         ),
         cena=CenaDTO(
-            wartosc=dane.get("cena"),
+            wartosc=formatuj_cene(dane.get("cena")),
             waluta=dane.get("waluta", "PLN"),
             jednostka=dane.get("jednostka_ceny"),
             cena_od=bool(dane.get("cena_od", False)),
             szacowany_koszt_calkowity=szacowany,
-            doplata_jedynka=dane.get("doplata_jedynka"),
-            oplata_klimatyczna_doba=dane.get("oplata_klimatyczna_doba"),
+            doplata_jedynka=formatuj_cene(dane.get("doplata_jedynka")),
+            oplata_klimatyczna_doba=formatuj_cene(dane.get("oplata_klimatyczna_doba")),
         ),
         standard=StandardDTO(
             wyzywienie=dane.get("wyzywienie"),
