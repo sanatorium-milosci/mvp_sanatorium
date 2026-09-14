@@ -1,0 +1,43 @@
+# deploy/Caddyfile
+# Konfiguracja automatycznego HTTPS i reverse proxy dla Sanatoria MVP
+
+{$DOMAIN:localhost} {
+    # Kompresja odpowiedzi
+    encode zstd gzip
+
+    # Proxy dla zapytań API do backendu FastAPI
+    handle /api/* {
+        reverse_proxy api:8000
+    }
+
+    # Dokumentacja Swagger i specyfikacja OpenAPI
+    handle /docs* {
+        reverse_proxy api:8000
+    }
+    handle /openapi.json {
+        reverse_proxy api:8000
+    }
+    handle /healthz {
+        reverse_proxy api:8000
+    }
+
+    # Serwowanie statycznej aplikacji webowej (React + Vite SPA)
+    handle {
+        root * /srv/web
+        try_files {path} /index.html
+        file_server
+    }
+
+    # Bezpieczne nagłówki HTTP
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+
+    log {
+        output stdout
+        format console
+    }
+}

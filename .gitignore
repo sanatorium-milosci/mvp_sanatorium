@@ -9,6 +9,8 @@ out/
 .cache/
 *.db
 *.sqlite*
+dane/
+kopie/
 .env
 .env.*
 !.env.example
