@@ -415,8 +415,12 @@ class RepozytoriumOfert:
             "wyzywienie": wyzywienie,
             "typy_pokoju": typy_pokoju,
             "jednostki_ceny": jednostki_ceny,
-            "cena_min": str(zakresy["cena_min"]) if zakresy["cena_min"] is not None else None,
-            "cena_max": str(zakresy["cena_max"]) if zakresy["cena_max"] is not None else None,
+            "cena_min": (
+                f"{float(zakresy['cena_min']):.2f}" if zakresy["cena_min"] is not None else None
+            ),
+            "cena_max": (
+                f"{float(zakresy['cena_max']):.2f}" if zakresy["cena_max"] is not None else None
+            ),
             "min_dni": zakresy["min_dni"],
             "max_dni": zakresy["max_dni"],
             "liczba_ofert_razem": zakresy["liczba_ofert_razem"],
