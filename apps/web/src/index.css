@@ -1,0 +1,399 @@
+:root {
+  color-scheme: light;
+  --kolor-tlo: #f7f5f1;
+  --kolor-karta: #ffffff;
+  --kolor-tekst: #1f2a24;
+  --kolor-tekst-przygaszony: #5c6b63;
+  --kolor-akcent: #1f6f54;
+  --kolor-akcent-ciemny: #164f3c;
+  --kolor-obwodka: #e0ddd4;
+  --kolor-blad: #b3261e;
+  --kolor-ok: #1f6f54;
+  --promien: 10px;
+  font-family:
+    'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--kolor-tlo);
+  color: var(--kolor-tekst);
+}
+
+a {
+  color: var(--kolor-akcent-ciemny);
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.naglowek {
+  background: var(--kolor-akcent-ciemny);
+  color: #fff;
+  padding: 1rem 1rem 1.25rem;
+}
+
+.naglowek__logo {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.naglowek__podtytul {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.tresc {
+  flex: 1;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.stopka {
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--kolor-tekst-przygaszony);
+}
+
+/* Filtry */
+.filtry {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  background: var(--kolor-karta);
+  border: 1px solid var(--kolor-obwodka);
+  border-radius: var(--promien);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+  .filtry {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .filtry__pole--szeroka {
+    grid-column: 1 / -1;
+  }
+}
+
+.filtry__pole {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.filtry__pole label {
+  font-weight: 600;
+  color: var(--kolor-tekst-przygaszony);
+}
+
+.filtry__pole input,
+.filtry__pole select {
+  padding: 0.5rem;
+  border: 1px solid var(--kolor-obwodka);
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #fff;
+}
+
+.filtry__pole--checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 400;
+  color: var(--kolor-tekst);
+}
+
+.filtry__wyczysc {
+  justify-self: start;
+  background: none;
+  border: 1px solid var(--kolor-obwodka);
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  color: var(--kolor-akcent-ciemny);
+}
+
+/* Wyniki */
+.wyniki__liczba {
+  color: var(--kolor-tekst-przygaszony);
+  font-size: 0.9rem;
+  margin: 0 0 0.75rem;
+}
+
+.lista-ofert {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.karta-oferty {
+  background: var(--kolor-karta);
+  border: 1px solid var(--kolor-obwodka);
+  border-radius: var(--promien);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.karta-oferty:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.karta-oferty__link {
+  display: block;
+  padding: 1rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.karta-oferty__naglowek {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.karta-oferty__naglowek h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--kolor-akcent-ciemny);
+}
+
+.karta-oferty__miejscowosc {
+  font-size: 0.85rem;
+  color: var(--kolor-tekst-przygaszony);
+}
+
+.karta-oferty__pakiet {
+  margin: 0.35rem 0 0.15rem;
+  font-weight: 600;
+}
+
+.karta-oferty__termin {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--kolor-tekst-przygaszony);
+}
+
+.karta-oferty__stopka {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.karta-oferty__cena {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--kolor-akcent);
+}
+
+.karta-oferty__pobrano {
+  margin: 0.4rem 0 0;
+  font-size: 0.75rem;
+  color: var(--kolor-tekst-przygaszony);
+}
+
+.etykieta {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.etykieta--ok {
+  background: #e3f3ec;
+  color: var(--kolor-ok);
+}
+
+.etykieta--brak {
+  background: #fbe9e7;
+  color: var(--kolor-blad);
+}
+
+.stronicowanie {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  font-size: 0.9rem;
+  color: var(--kolor-tekst-przygaszony);
+}
+
+.stronicowanie button {
+  background: #fff;
+  border: 1px solid var(--kolor-obwodka);
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  color: var(--kolor-akcent-ciemny);
+}
+
+.stronicowanie button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.szczegoly-oferty__koszt-calkowity {
+  background: #f0f6f2;
+  border-radius: 6px;
+  padding: 0.6rem 0.85rem;
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+}
+
+/* Stany widoku */
+.stan-widoku {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--kolor-tekst-przygaszony);
+}
+
+.stan-widoku__podpowiedz {
+  font-size: 0.9rem;
+}
+
+.stan-widoku--blad {
+  color: var(--kolor-blad);
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  margin: 0 auto 0.75rem;
+  border: 3px solid var(--kolor-obwodka);
+  border-top-color: var(--kolor-akcent);
+  border-radius: 50%;
+  animation: girowanie 0.8s linear infinite;
+}
+
+@keyframes girowanie {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Szczegóły oferty */
+.szczegoly-oferty {
+  background: var(--kolor-karta);
+  border: 1px solid var(--kolor-obwodka);
+  border-radius: var(--promien);
+  padding: 1.25rem;
+}
+
+.szczegoly-oferty__powrot {
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.szczegoly-oferty h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--kolor-akcent-ciemny);
+}
+
+.szczegoly-oferty__miejscowosc {
+  margin: 0.15rem 0 0.75rem;
+  color: var(--kolor-tekst-przygaszony);
+}
+
+.szczegoly-oferty h2 {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+}
+
+.szczegoly-oferty__cena-blok {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.szczegoly-oferty__cena {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--kolor-akcent);
+  margin: 0;
+}
+
+.szczegoly-oferty__lista {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem 1rem;
+  margin: 0 0 1rem;
+}
+
+@media (min-width: 560px) {
+  .szczegoly-oferty__lista {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.szczegoly-oferty__lista dt {
+  font-size: 0.8rem;
+  color: var(--kolor-tekst-przygaszony);
+  font-weight: 600;
+}
+
+.szczegoly-oferty__lista dd {
+  margin: 0;
+}
+
+.szczegoly-oferty__tagi {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.szczegoly-oferty__tagi li {
+  background: #eef1ee;
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.8rem;
+}
+
+.szczegoly-oferty__kontakt {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--kolor-obwodka);
+}
+
+.szczegoly-oferty__pobrano {
+  font-size: 0.8rem;
+  color: var(--kolor-tekst-przygaszony);
+}
+
+.przycisk-glowny {
+  display: inline-block;
+  background: var(--kolor-akcent);
+  color: #fff;
+  padding: 0.6rem 1.1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+}
