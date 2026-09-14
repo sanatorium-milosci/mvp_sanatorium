@@ -1,5 +1,7 @@
 # Pierwsze rzeczywiste źródła — przekazanie do integracji
 
+[Notatka z przebiegu prac i decyzji dla pozostałych agentów](NOTATKA-DLA-AGENTOW.md).
+
 Trzy adaptery korzystają z istniejącego `Fetch`, runnera i kontraktu `Oferta` 0.1.0.
 Nie dodają zależności ani nie zmieniają bazy, API, interfejsu lub modeli wspólnych.
 
