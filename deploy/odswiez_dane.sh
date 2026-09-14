@@ -12,13 +12,26 @@ if find out/ -name ".run.lock" -mmin +60 2>/dev/null | grep -q .; then
     echo "UWAGA: Znaleziono blokadę .run.lock starszą niż 60 minut. Wymagana weryfikacja procesu."
 fi
 
-# 2. Uruchomienie zarejestrowanych adapterów produkcyjnych (jeśli przekazano jako argumenty)
-if [ "$#" -gt 0 ]; then
-    for adapter in "$@"; do
-        echo "Uruchamianie crawlera: ${adapter}..."
-        uv run sanatoria-crawler run "${adapter}" || echo "Crawler ${adapter} zgłosił błąd (kontynuacja)."
-    done
+# Ładowanie zmiennych środowiskowych (.env)
+if [ -f .env ]; then
+    set -a; source .env; set +a
+elif [ -f deploy/.env ]; then
+    set -a; source deploy/.env; set +a
 fi
+
+export SANATORIA_USER_AGENT="${SANATORIA_USER_AGENT:-SanatoriaBot/0.1 (+https://thegame2026.art; kontakt@thegame2026.art)}"
+
+# 2. Uruchomienie zarejestrowanych adapterów produkcyjnych (domyślnie: 3 produkcyjne ośrodki)
+if [ "$#" -gt 0 ]; then
+    ADAPTERY=("$@")
+else
+    ADAPTERY=("sanatorium_promien" "sanatorium_bristol" "sanatorium_znp")
+fi
+
+for adapter in "${ADAPTERY[@]}"; do
+    echo "Uruchamianie crawlera: ${adapter}..."
+    uv run sanatoria-crawler run "${adapter}" || echo "Crawler ${adapter} zgłosił błąd (kontynuacja)."
+done
 
 # 3. Bezpieczny import kompletnych paczek
 echo "Importowanie danych do bazy SQLite..."

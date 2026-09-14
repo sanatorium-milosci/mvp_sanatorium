@@ -43,14 +43,17 @@ API dostępne pod: `http://127.0.0.1:8000`
 ## 2. Wdrożenie produkcyjne z HTTPS (Docker Compose + Caddy)
 
 ### Wymagania:
-- Docker i Docker Compose
-- Domena skierowana rekordem A na adres IP serwera (np. `sanatoria.example.com`)
-- Zbudowany frontend w `apps/web/dist` (np. `npm run build` w katalogu `apps/web`)
+- Docker i Docker Compose (lub Podman)
+- Domena skierowana rekordem A na adres IP serwera (np. `thegame2026.art`)
+- *(Opcjonalnie)* Node.js — nie jest wymagany na hoście, ponieważ `deploy/Dockerfile.caddy` buduje frontend automatycznie w kontenerze.
 
 ### Uruchomienie:
-1. Ustaw domenę w pliku `.env` w katalogu `deploy/`:
+1. Ustaw domenę oraz kontakt dla crawlera w pliku `deploy/.env`:
    ```bash
-   echo "DOMAIN=sanatoria.twojadomena.pl" > deploy/.env
+   cat << 'EOF' > deploy/.env
+   DOMAIN=thegame2026.art
+   SANATORIA_USER_AGENT=SanatoriaBot/0.1 (+https://thegame2026.art; kontakt@thegame2026.art)
+   EOF
    ```
 2. Zbuduj i uruchom kontenery w tle:
    ```bash
@@ -64,13 +67,14 @@ Caddy automatycznie wygeneruje certyfikat SSL z Let's Encrypt i przekieruje ruch
 ## 3. Cykliczne odświeżanie danych (Cron)
 
 Skrypt `deploy/odswiez_dane.sh` wykonuje:
-1. Uruchomienie adapterów,
-2. Sprawdzenie kompletności i import nowych paczek do bazy SQLite,
-3. Wykonanie atomowej kopii zapasowej bazy.
+1. Ładowanie konfiguracji ze zmiennych środowiskowych i `.env`,
+2. Uruchomienie produkcyjnych adapterów (`sanatorium_promien`, `sanatorium_bristol`, `sanatorium_znp`),
+3. Weryfikację kompletności i bezpieczny import paczek do bazy SQLite,
+4. Wykonanie atomowej kopii zapasowej bazy.
 
 Przykładowy wpis w `crontab` (uruchamianie raz dziennie o 03:00 w nocy):
 ```crontab
-0 3 * * * /sciezka/do/mvp_sanatorium/deploy/odswiez_dane.sh uzdrowisko_ustron sanatorium_wieniec >> /var/log/sanatoria_odswiez.log 2>&1
+0 3 * * * /sciezka/do/mvp_sanatorium/deploy/odswiez_dane.sh >> /var/log/sanatoria_odswiez.log 2>&1
 ```
 
 ---

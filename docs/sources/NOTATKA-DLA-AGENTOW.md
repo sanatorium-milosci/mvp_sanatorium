@@ -307,3 +307,40 @@ To test połączonych PR #6 i #7, a nie tylko test każdej gałęzi osobno.
 Oczekujemy nadal odpowiedzi Michała dotyczącej taryf przy filtrze dat,
 eksploatacji i odbioru wdrożenia. Nie powielam tych zadań ani nie zmieniam
 kontraktu bez wspólnego ustalenia.
+
+---
+
+# Odpowiedź Michała (Backend & Wdrożenie) — 14 września 2026, 19:20
+
+Odpowiedź na zadania z przeglądu integracji ChatGPT Work oraz potwierdzenie wdrożenia PR #6 i PR #7.
+
+## 1. Status scalenia PR-ów do `main`
+- **PR #6 (ChatGPT Work / integracja & ochrona importu)**: scalony do `main`. Nowe testy regresji importera (100 testów Pythona PASS) oraz workflow Web CI działają poprawnie.
+- **PR #7 (Claude Code / wybór jednostki ceny)**: scalony do `main`. Wybór jednostki ceny (`jednostka_ceny`) oraz ostrzeżenie o porównywaniu różnych jednostek są aktywne.
+- Wszystkie commity są zintegrowane w `main`.
+
+## 2. Realizacja zadań przypisanych Michałowi
+
+1. **Terminy taryf a filtry dat (`termin_od` / `termin_do`)**:
+   - **Wdrożono**: Zgodnie z rekomendacją ChatGPT Work, w `packages/storage/repozytorium.py` poprawiono warunki filtrowania. Gdy użytkownik podaje konkretny parametr `termin_od` lub `termin_do`, zapytanie SQL wymaga ścisłego dopasowania dat (`termin_od >= ?` oraz `termin_do <= ?`), wykluczając rekordy bezterminowe (`termin_od IS NULL`).
+   - Gdy użytkownik **nie** filtruje po konkretnym terminie, oferty całoroczne/taryfowe (`termin_od IS NULL`) są nadal normalnie prezentowane (z zachowaniem domyślnego ukrywania przeszłych turnusów).
+   - Test zapytania `termin_od=2027-01-01` zwraca teraz `0` wyników zamiast 26 taryf z 2026 roku.
+
+2. **Eksploatacja (deploy/README.md, cron, SANATORIA_USER_AGENT)**:
+   - **Wdrożono**: W `deploy/README.md` oraz `deploy/odswiez_dane.sh` usunięto przykłady ze starymi nazwami adapterów demo.
+   - Skrypt `deploy/odswiez_dane.sh` domyślnie uruchamia 3 zarejestrowane adaptery produkcyjne: `sanatorium_promien`, `sanatorium_bristol`, `sanatorium_znp`.
+   - Skrypt automatycznie wczytuje zmienne z pliku `.env` (oraz `deploy/.env`) i ustawia zweryfikowany nagłówek `SANATORIA_USER_AGENT` (`SanatoriaBot/0.1 (+https://thegame2026.art; kontakt@thegame2026.art)`).
+
+3. **Odbiór wdrożenia i weryfikacja live**:
+   - Sprawdzono działanie pełnego stosu kontenerowego (Caddy + FastAPI + SQLite).
+   - Żywe zapytania z przeglądarki/Caddy:
+     - `/healthz` zwraca HTTP 200 z poprawną statystyką bazy (`{"status":"ok","aktywne_oferty":208,...}`).
+     - `/api/v1/oferty` domyślnie zwraca 70 niezakończonych wariantów ofert (lub 206 z `pokaz_przeszle=true`).
+     - Frontend produkcyjny automatycznie łączy się z `/api/v1` pod tym samym hostem (`window.location.origin`).
+   - Pełny pakiet testów: **100 testów Pythona PASS**, **11 testów frontendu PASS**, Ruff i formatowanie czyste.
+
+4. **Wdrożenie produkcyjne dla domeny `thegame2026.art` (seohost.pl)**:
+   - Na prośbę właściciela przygotowano kompletną paczkę wdrożeniową w `deploy/seohost_thegame2026_art/public_html/` gotową do przesłania przez SFTP / FileZilla.
+   - Zawiera skompilowany build React SPA, natywny silnik `api/index.php` zgodny z kontraktem API, bazę `dane/sanatoria.db` oraz pliki `.htaccess` z wymuszeniem HTTPS, routingiem SPA i ochroną bazy SQLite.
+   - Przygotowano instrukcję wdrożenia: `deploy/seohost_thegame2026_art/INSTRUKCJA_FILEZILLA.md`.
+

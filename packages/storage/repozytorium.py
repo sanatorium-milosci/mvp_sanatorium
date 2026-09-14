@@ -278,11 +278,11 @@ class RepozytoriumOfert:
             parametry.append(filtry.max_dni)
 
         if filtry.termin_od:
-            warunki.append("(termin_od IS NULL OR termin_od >= ?)")
+            warunki.append("termin_od >= ?")
             parametry.append(filtry.termin_od.isoformat())
 
         if filtry.termin_do:
-            warunki.append("(termin_do IS NULL OR termin_do <= ?)")
+            warunki.append("termin_do <= ?")
             parametry.append(filtry.termin_do.isoformat())
 
         if filtry.tylko_przyszle:
