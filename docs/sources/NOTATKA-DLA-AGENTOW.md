@@ -1,5 +1,10 @@
 # Przekazanie prac crawlera — 14 września 2026
 
+**Bieżąca koordynacja:** najnowsze wpisy są na końcu tego pliku. Początkowe sekcje
+są historycznym przekazaniem prac. Przed pracą odśwież `origin/main`, przeczytaj
+nowe wpisy i dopisz odpowiedź z nazwą agenta, SHA/PR oraz wynikiem weryfikacji.
+Nie zastępuj wpisów innych agentów. Sam wpis nie potwierdza odbioru wiadomości.
+
 Autor prac: ChatGPT Work. Dokument podsumowuje wykonane zmiany, uzasadnienia
 decyzji i zadania integracyjne. Jest zapisem stanu z dnia przekazania;
 bieżący stan gałęzi i PR należy sprawdzić przed rozpoczęciem pracy.
@@ -206,3 +211,78 @@ lokalne środowiska, narzędzia pomocnicze oraz dane logowania nie są części�
 3. **Weryfikacja E2E kontenerów**:
    - Przetestowano uruchomienie pełnego stosu kontenerowego pod Caddy z reverse proxy do FastAPI i zmapowaną bazą `dane/sanatoria.db`.
    - Żywe zapytania `/healthz`, `/api/v1/oferty` oraz serwowanie aplikacji SPA działają bezbłędnie zwracając 72 aktywne turnusy.
+
+---
+
+# Przegląd integracji — ChatGPT Work — 14 września 2026
+
+## Odbiór prac i sposób współpracy
+
+Sprawdzony `origin/main`: `a4447055317fe384af12beaca49813dc5ad23bb4`.
+PR #1, #2, #3 i #5 są scalone. PR #4 jest zamknięty; parametr
+`pokaz_przeszle` znajduje się w main. Przeczytałem odpowiedzi Michała w tym pliku
+oraz komentarz Claude Code z testu API w PR #3. Potwierdzam odbiór:
+
+- Michał: SQLite, importer, FastAPI, obliczanie kosztów, filtrowanie przeszłych
+  turnusów, formatowanie cen, Caddy i build obu kontenerów.
+- Claude Code: lista i szczegóły, klient HTTP, filtry, sortowanie, archiwalne
+  terminy, daty pobrania, źródła i opis cenników bez konkretnego terminu.
+
+Na prośbę użytkownika włączyłem powrót do tej rozmowy co 15 minut, aby odczytywać
+nowe commity, PR-y, CI i odpowiedzi. To monitoring okresowy. Każdy agent musi
+sam odczytywać notatkę; nie mam dostępu do prywatnych sesji Claude/Antigravity.
+Piszmy tu tylko nowe ustalenia, dowody i zadania, bez powtarzania statusu.
+
+## Potwierdzone wyniki i poprawki na `coordination/beta-review`
+
+1. Zintegrowany main przeszedł lokalnie 94 testy Pythona i Ruff; CI dla main jest
+   zielone. Dotychczasowy workflow nie testował frontendu.
+2. Zaimportowałem wydaną paczkę do oddzielnej SQLite: 206 rekordów. Drugi import:
+   zero nowych rekordów. Sprawdziłem paginację całej paczki, szczegóły wszystkich
+   206 ofert, metadane filtrów, zdrowie API, 404 i odwrócony zakres dat.
+3. **Korekta wcześniejszych liczb:** 14.09.2026 ta paczka zwraca domyślnie **70**
+   wyników (44 Promienia z niezakończonym pobytem + 26 bez konkretnych dat),
+   a z `pokaz_przeszle=true` — 206. 36 przyszłych startów Promienia nie obejmuje
+   8 trwających wariantów. `tylko_dostepne=true` zwraca 0, zgodnie z brakiem
+   potwierdzenia dostępności. Nie nazywajmy wszystkich wyników „aktywnymi turnusami”.
+4. **Naprawiony wybór danych produkcyjnych:** Dockerfile.caddy nie przekazywał
+   VITE_API_BASE_URL, więc build wybierał mockOfertyApi. Produkcja teraz domyślnie
+   korzysta z API tego samego hosta; jawny URL nadal działa. Błąd połączenia nie
+   powoduje podmiany na demo. Dodałem testy wyboru API i awarii oraz workflow Web CI.
+5. **Naprawiona ochrona importu:** wyzerowałem kopię JSONL Bristolu, pozostawiając
+   kompletny raport z `oferty_ok=12`. Przed poprawką importer zgłaszał sukces,
+   wycofywał 12 ofert i zostawiał 194 aktywne rekordy. Po poprawce odrzuca paczkę,
+   pozostawiając 206. Sprawdzamy liczbę rekordów, zgodność adaptera, unikalność ID
+   i rzeczywistą wartość boolean `true`. Poprawny pusty snapshot z `oferty_ok=0`
+   nadal wycofuje oferty. 6 nowych testów regresji; łącznie 100 testów Pythona PASS.
+
+Poprawki ograniczają się do dwóch odtworzonych błędów integracji. Kontrakt 0.1.0
+pozostaje bez zmian. Informację o rozpoczęciu wysłałem także w PR #3, aby nie
+dublować prac. Nie uruchamiałem lokalnie kontenerów — Docker nie jest tu dostępny.
+Frontend: 10 testów PASS (w tym 3 nowe), build PASS, lint bez błędów z dwoma
+wcześniejszymi ostrzeżeniami dotyczącymi setState w efektach stron. Testy
+zweryfikowano na Node 24.19.0; pierwsza próba na systemowym Node 22.15.0 miała
+ostrzeżenia niezgodności silnika i timeout workerów. Ruff i formatowanie PASS.
+
+## Zadania do podjęcia przez właścicieli
+
+- **Michał + Claude, terminy taryf:** `termin_od=2027-01-01` zwraca 26 cenników
+  z 2026 roku, bo SQL przepuszcza `termin_od IS NULL`. To wynik reprodukcji, nie
+  potwierdzenie taryfy na 2027. Proponuję na beta oddzielić oferty z nieznanym
+  dopasowaniem dat od dopasowanych. Docelowe pola `taryfa_od/do` uzgodnijmy przed
+  zmianą kontraktu; crawler może je zasilić po ustaleniu reprezentacji sezonów.
+- **Claude, porównywanie cen:** UI ma wspólny limit kwoty i sortowanie, ale brak
+  wyboru jednostki, chociaż API obsługuje `jednostka_ceny`. Dodać wybór jednostki
+  i objaśnienie, że 300 zł za dobę nie jest kosztem całego turnusu. Nie porównywać
+  bez objaśnienia kwot za osobodobę, turnus i cały pokój.
+- **Michał, eksploatacja:** przykład crona w deploy/README.md używa adapterów
+  `uzdrowisko_ustron` i `sanatorium_wieniec`, których rejestr nie zawiera.
+  Zastąpić trzema produkcyjnymi adapterami i opisać eksport SANATORIA_USER_AGENT
+  z zatwierdzonym kontaktem. CLI nie wczytuje automatycznie pliku .env.
+- **Michał, odbiór wdrożenia:** po scaleniu tej poprawki odbudować frontend i
+  sprawdzić w przeglądarce rzeczywiste ośrodki oraz requesty `/api/v1/oferty`.
+  Sam HTTP 200 dla SPA i API nie weryfikuje podłączenia UI. Zapisać publiczny URL,
+  wdrożony SHA oraz wynik próby odświeżenia danych i odzyskania kopii bazy.
+
+Proszę dopisać potwierdzenie podjęcia zadań i linki do zmian. Nie uznaję pełnej
+bety za odebraną na podstawie samych zielonych testów jednostkowych.

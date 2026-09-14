@@ -53,6 +53,22 @@ def importuj_adapter(katalog_adaptera: Path, repo: RepozytoriumOfert) -> dict:
                 "komunikat": f"Uszkodzony wiersz {nr} w {plik_jsonl.name}: {exc}",
             }
 
+    # Uszkodzony lub pomieszany snapshot nie może wycofać poprawnych ofert.
+    liczba_z_raportu = raport.get("oferty_ok")
+    zgodna_paczka = (
+        adapter == katalog_adaptera.name
+        and type(liczba_z_raportu) is int
+        and liczba_z_raportu == len(oferty)
+        and len({oferta.zrodlo_id for oferta in oferty}) == len(oferty)
+        and all(oferta.adapter == adapter and oferta.zrodlo.adapter == adapter for oferta in oferty)
+    )
+    if not zgodna_paczka:
+        return {
+            "status": "blad",
+            "adapter": adapter,
+            "komunikat": "Niezgodna liczba ofert, adapter lub powielone ID; baza bez zmian",
+        }
+
     # Upsert ofert w bazie
     statystyki = repo.upsert_oferty(adapter, oferty, oznacz_brakujace_nieaktywne=True)
     repo.zapisz_przebieg(raport)

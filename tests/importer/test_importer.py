@@ -146,3 +146,38 @@ def test_import_wszystkich_adapterow(tmp_path: Path, repo_pamiec: RepozytoriumOf
     # Weryfikacja wyszukiwania w bazie
     elementy, razem = repo_pamiec.szukaj_ofert(FiltryOfert())
     assert razem == 3
+
+
+@pytest.mark.parametrize("uszkodzenie", ["pusty", "uciety", "duplikat", "adapter", "kompletny"])
+def test_uszkodzony_snapshot_nie_wycofuje_ofert(tmp_path, repo_pamiec, uszkodzenie):
+    kat = przygotuj_katalog_adaptera(tmp_path)
+    assert importuj_adapter(kat, repo_pamiec)["status"] == "sukces"
+    plik = kat / "2026-09-14.jsonl"
+    linie = plik.read_text(encoding="utf-8").splitlines()
+    if uszkodzenie == "pusty":
+        plik.write_text("", encoding="utf-8")
+    elif uszkodzenie == "uciety":
+        plik.write_text(linie[0] + "\n", encoding="utf-8")
+    elif uszkodzenie == "duplikat":
+        plik.write_text((linie[0] + "\n") * 2, encoding="utf-8")
+    elif uszkodzenie == "adapter":
+        rekord = json.loads(linie[0])
+        rekord["adapter"] = "inny"
+        rekord["zrodlo"]["adapter"] = "inny"
+        plik.write_text(json.dumps(rekord) + "\n" + linie[1] + "\n", encoding="utf-8")
+    else:
+        raport_plik = kat / "2026-09-14.raport.json"
+        raport = json.loads(raport_plik.read_text(encoding="utf-8"))
+        raport["kompletny"] = "false"
+        raport_plik.write_text(json.dumps(raport), encoding="utf-8")
+
+    assert importuj_adapter(kat, repo_pamiec)["status"] != "sukces"
+    assert repo_pamiec.policz_aktywne_oferty() == 2
+
+
+def test_prawdziwy_kompletny_pusty_snapshot_wycofuje_oferty(tmp_path, repo_pamiec):
+    kat = przygotuj_katalog_adaptera(tmp_path)
+    assert importuj_adapter(kat, repo_pamiec)["status"] == "sukces"
+    przygotuj_katalog_adaptera(tmp_path, liczba_ofert=0)
+    assert importuj_adapter(kat, repo_pamiec)["status"] == "sukces"
+    assert repo_pamiec.policz_aktywne_oferty() == 0

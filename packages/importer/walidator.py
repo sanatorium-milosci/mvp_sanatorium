@@ -34,7 +34,10 @@ def sprawdz_gotowosc_do_importu(
     except Exception as exc:
         return False, f"Niepoprawny plik raportu {najnowszy_raport}: {exc}", None, None
 
-    if not dane_raportu.get("kompletny"):
+    if not isinstance(dane_raportu, dict):
+        return False, "Raport musi być obiektem JSON", None, None
+
+    if dane_raportu.get("kompletny") is not True:
         return (
             False,
             (

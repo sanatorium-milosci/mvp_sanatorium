@@ -20,7 +20,10 @@ npm run lint    # oxlint
 
 ## Stan obecny
 
-Interfejs działa **na danych mockowych** (`src/api/mockData.ts`), ale kształt danych,
+Produkcyjny build domyślnie pobiera **rzeczywiste dane z API tego samego hosta**
+(`/api/v1`, przekierowanie przez Caddy). Nie wymaga `VITE_API_BASE_URL`.
+Development bez konfiguracji korzysta z danych demonstracyjnych (`src/api/mockData.ts`).
+Kształt danych,
 typy TS (`src/types/oferta.ts`) i warstwa API (`src/api/`) są już zgodne z realnym
 kontraktem backendu opublikowanym przez Antigravity/Michała w
 `docs/api/specyfikacja.md` (branch `backend/mvp-api-storage`): zagnieżdżone obiekty
@@ -39,9 +42,9 @@ Warstwa dostępu do danych jest odizolowana w `src/api/`:
   (`GET /api/v1/oferty`, `/oferty/{id}`, `/filtry`).
 - `src/api/index.ts` — przełącza się automatycznie: jeśli ustawiona jest zmienna
   środowiskowa `VITE_API_BASE_URL` (np. w `apps/web/.env.local`), używany jest
-  `httpApi`; w przeciwnym razie `mockApi`. Reszta aplikacji importuje wyłącznie
-  `ofertyApi` z `src/api`, więc podłączenie prawdziwego backendu nie wymaga zmian
-  w komponentach — wystarczy ustawić `VITE_API_BASE_URL`.
+  `httpApi`; bez niej produkcja używa `window.location.origin`, a development
+  `mockApi`. Błąd API w produkcji pokazuje stan błędu, bez zastępowania danych
+  demonstracyjnymi. Zmienna Vite jest odczytywana podczas budowania aplikacji.
 
 ## Struktura
 
@@ -64,8 +67,5 @@ src/utils/format.ts        formatowanie cen, dat, terminów po polsku
 - Układ mobile-first, w pełni po polsku.
 - `None`/`null` z kontraktu zawsze renderowane jako „nie ustalono” — bez zgadywania.
 
-## Do zrobienia po publikacji `docs/api/`
-
-1. Podmienić `mockOfertyApi` w `src/api/index.ts` na klienta HTTP wg opublikowanego kontraktu.
-2. Usunąć/zredukować `src/api/mockData.ts` (lub zostawić do testów/Storybooka).
-3. Dostosować `FiltryWyszukiwania`, jeśli realne API różni się od założeń.
+Testy wymagają Node zgodnego z lockfile (np. Node 24.19.0; Node 22.15.0 jest
+za stary dla obecnego jsdom). CI sprawdza testy, build i lint na Node 24.
