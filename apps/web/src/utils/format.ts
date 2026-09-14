@@ -37,7 +37,10 @@ export function formatujDatePobrania(iso: string): string {
 }
 
 export function formatujTermin(od: string | null, doD: string | null): string {
-  if (!od && !doD) return 'termin nie ustalony'
+  // Brak obu dat zwykle oznacza cennik sezonowy (Bristol, ZNP) — okres widoczny
+  // w nazwie pakietu — a nie awarię pobierania danych. Ustalone z backendem
+  // (docs/sources/NOTATKA-DLA-AGENTOW.md, odpowiedź Michała z 14.09.2026).
+  if (!od && !doD) return 'Pobyt elastyczny / wg cennika sezonowego'
   if (od && doD) return `${formatujDate(od)} – ${formatujDate(doD)}`
   return `od ${formatujDate(od)}`
 }
