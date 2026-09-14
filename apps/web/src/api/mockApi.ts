@@ -38,6 +38,10 @@ function pasujeDoFiltrow(oferta: Oferta, filtry: FiltryWyszukiwania): boolean {
     if (!oferta.pakiet.termin_do || oferta.pakiet.termin_do > filtry.termin_do) return false
   }
   if (filtry.tylko_dostepne && oferta.pakiet.dostepny !== true) return false
+  if (!filtry.pokaz_przeszle) {
+    const dzisiaj = new Date().toISOString().slice(0, 10)
+    if (oferta.pakiet.termin_do && oferta.pakiet.termin_do < dzisiaj) return false
+  }
   if (filtry.basen && oferta.udogodnienia.basen !== true) return false
   if (filtry.winda && oferta.udogodnienia.winda !== true) return false
   if (filtry.parking && oferta.udogodnienia.parking !== true) return false

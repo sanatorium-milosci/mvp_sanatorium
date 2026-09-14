@@ -26,6 +26,8 @@ export interface FiltryWyszukiwania {
   termin_od?: string // ISO date
   termin_do?: string // ISO date
   tylko_dostepne?: boolean
+  /** Gdy false (domyślnie), backend wyklucza turnusy których termin_do minął. */
+  pokaz_przeszle?: boolean
   basen?: boolean
   winda?: boolean
   parking?: boolean

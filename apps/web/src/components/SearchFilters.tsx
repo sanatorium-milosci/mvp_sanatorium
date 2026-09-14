@@ -142,6 +142,18 @@ export function SearchFilters({ filtry, miejscowosci, onZmiana, onWyczysc }: Pro
         </label>
       </div>
 
+      <div className="filtry__pole filtry__pole--checkbox">
+        <label htmlFor="pokazPrzeszle">
+          <input
+            id="pokazPrzeszle"
+            type="checkbox"
+            checked={filtry.pokaz_przeszle ?? false}
+            onChange={(e) => onZmiana({ ...filtry, pokaz_przeszle: e.target.checked || undefined })}
+          />
+          Pokaż też zakończone terminy
+        </label>
+      </div>
+
       {aktywneFiltry && (
         <button type="button" className="filtry__wyczysc" onClick={onWyczysc}>
           Wyczyść filtry
