@@ -1,0 +1,183 @@
+{
+  "elementy": [
+    {
+      "id": 1,
+      "adapter": "uzdrowisko_ustron",
+      "zrodlo_id": "pakiet-kuracyjny-14",
+      "osrodek": {
+        "klucz": "uzdrowisko-ustron-rownica",
+        "nazwa": "Uzdrowisko Ustroń - Sanatorium Równica",
+        "miejscowosc": "Ustroń",
+        "wojewodztwo": "śląskie",
+        "nip": "5480075548",
+        "telefon": "+48 33 854 54 54"
+      },
+      "pakiet": {
+        "nazwa": "Pobyt Kuracyjny z Zabiegami",
+        "liczba_dni": 14,
+        "liczba_nocy": 13,
+        "termin_od": "2026-10-01",
+        "termin_do": "2026-10-14",
+        "dostepny": true
+      },
+      "cena": {
+        "wartosc": "2980.00",
+        "waluta": "PLN",
+        "jednostka": "turnus_osoba",
+        "cena_od": false,
+        "szacowany_koszt_calkowity": "2980.00",
+        "doplata_jedynka": "450.00",
+        "oplata_klimatyczna_doba": "5.50"
+      },
+      "standard": {
+        "wyzywienie": "fb",
+        "typ_pokoju": "dwuosobowy",
+        "liczba_zabiegow_dziennie": 3,
+        "zabiegi": [
+          "Kąpiel solankowa",
+          "Masaż klasyczny częściowy",
+          "Inhalacje solankowe"
+        ],
+        "opieka_lekarska": true
+      },
+      "profile": [
+        "ortopedyczno_urazowy",
+        "reumatologiczny",
+        "kardiologiczny"
+      ],
+      "udogodnienia": {
+        "winda": true,
+        "dostepny_dla_wozka": true,
+        "parking": true,
+        "parking_platny": false,
+        "wifi": true,
+        "basen": true,
+        "zwierzeta": false,
+        "odleglosc_od_centrum_m": 500
+      },
+      "linki": {
+        "url_rezerwacji": "https://uzdrowisko-ustron.pl/rezerwacja/pakiet-14",
+        "url_zrodla": "https://uzdrowisko-ustron.pl/pakiety/kuracyjny-14",
+        "pobrano_o": "2026-09-14T15:00:00Z"
+      }
+    },
+    {
+      "id": 2,
+      "adapter": "sanatorium_wieniec",
+      "zrodlo_id": "pakiet-zdrowy-kregoslup-7",
+      "osrodek": {
+        "klucz": "jutrzenka-wieniec-zdroj",
+        "nazwa": "Uzdrowisko Wieniec-Zdrój - Szpital Uzdrowiskowy Jutrzenka",
+        "miejscowosc": "Wieniec-Zdrój",
+        "wojewodztwo": "kujawsko-pomorskie",
+        "nip": "8880001234",
+        "telefon": "+48 54 270 11 11"
+      },
+      "pakiet": {
+        "nazwa": "Zdrowy Kręgosłup 7 dni",
+        "liczba_dni": 7,
+        "liczba_nocy": 6,
+        "termin_od": "2026-09-20",
+        "termin_do": "2026-09-27",
+        "dostepny": true
+      },
+      "cena": {
+        "wartosc": "260.00",
+        "waluta": "PLN",
+        "jednostka": "osobodoba",
+        "cena_od": true,
+        "szacowany_koszt_calkowity": "1820.00",
+        "doplata_jedynka": null,
+        "oplata_klimatyczna_doba": "4.00"
+      },
+      "standard": {
+        "wyzywienie": "fb",
+        "typ_pokoju": "dwuosobowy",
+        "liczba_zabiegow_dziennie": 2,
+        "zabiegi": [
+          "Kinezyterapia indywidualna",
+          "Okłady borowinowe"
+        ],
+        "opieka_lekarska": true
+      },
+      "profile": [
+        "ortopedyczno_urazowy",
+        "neurologiczny"
+      ],
+      "udogodnienia": {
+        "winda": true,
+        "dostepny_dla_wozka": true,
+        "parking": true,
+        "parking_platny": true,
+        "wifi": true,
+        "basen": true,
+        "zwierzeta": null,
+        "odleglosc_od_centrum_m": 1200
+      },
+      "linki": {
+        "url_rezerwacji": "https://uzdrowisko-wieniec.pl/rezerwacja",
+        "url_zrodla": "https://uzdrowisko-wieniec.pl/oferta/zdrowy-kregoslup",
+        "pobrano_o": "2026-09-14T15:05:00Z"
+      }
+    },
+    {
+      "id": 3,
+      "adapter": "demo",
+      "zrodlo_id": "pobyt-7",
+      "osrodek": {
+        "klucz": "sanatorium-demo",
+        "nazwa": "Sanatorium demonstracyjne (dane fikcyjne)",
+        "miejscowosc": "Miejscowość testowa",
+        "wojewodztwo": null,
+        "nip": null,
+        "telefon": null
+      },
+      "pakiet": {
+        "nazwa": "Pobyt 7 dni",
+        "liczba_dni": 7,
+        "liczba_nocy": 6,
+        "termin_od": null,
+        "termin_do": null,
+        "dostepny": true
+      },
+      "cena": {
+        "wartosc": "1290.00",
+        "waluta": "PLN",
+        "jednostka": "turnus_osoba",
+        "cena_od": false,
+        "szacowany_koszt_calkowity": "1290.00",
+        "doplata_jedynka": null,
+        "oplata_klimatyczna_doba": null
+      },
+      "standard": {
+        "wyzywienie": "fb",
+        "typ_pokoju": null,
+        "liczba_zabiegow_dziennie": null,
+        "zabiegi": [],
+        "opieka_lekarska": null
+      },
+      "profile": [],
+      "udogodnienia": {
+        "winda": null,
+        "dostepny_dla_wozka": null,
+        "parking": null,
+        "parking_platny": null,
+        "wifi": null,
+        "basen": null,
+        "zwierzeta": null,
+        "odleglosc_od_centrum_m": null
+      },
+      "linki": {
+        "url_rezerwacji": null,
+        "url_zrodla": "https://sanatorium.example/oferty",
+        "pobrano_o": "2026-09-14T15:05:19Z"
+      }
+    }
+  ],
+  "stronicowanie": {
+    "strona": 1,
+    "na_stronie": 20,
+    "razem": 3,
+    "stron_razem": 1
+  }
+}
