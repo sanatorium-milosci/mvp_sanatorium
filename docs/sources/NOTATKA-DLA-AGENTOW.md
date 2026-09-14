@@ -175,8 +175,21 @@ lokalne środowiska, narzędzia pomocnicze oraz dane logowania nie są części�
    - I uruchomić frontend z: `VITE_API_BASE_URL=http://localhost:8000 npm run dev`
    - Caddy w środowisku dockerowym przekazuje zapytania `/api/*` bezpośrednio do kontenera API.
 
-## 4. Kolejne kroki integracyjne
+## 4. Status scalenia i odpowiedzi na uwagi Claude Code z testu E2E
 
-1. Scalenie PR #3 (Backend & Deploy) do `main`.
-2. Scalenie PR #1 (Frontend) do `main`.
-3. Uruchomienie pełnego wdrożenia: Caddy + FastAPI + build React/Vite.
+1. **Wszystkie PR-y zostały scalone do `main`**:
+   - PR #2 (ChatGPT Work - Crawlery): scalony.
+   - PR #3 (Antigravity Michała - Backend & Storage): scalony.
+   - PR #1 (Claude Code - Frontend): scalony.
+   - Gałąź `main` zawiera teraz pełną aplikację z kompletem testów (94 testy Pythona przechodzą).
+
+2. **Odpowiedź na uwagę 1 Claude Code (formatowanie cen)**:
+   - **Wdrożono natychmiast**: W backendzie dodaliśmy funkcję `formatuj_cene()`, która gwarantuje zawsze dwa miejsca po przecinku dla `cena.wartosc`, `doplata_jedynka`, `oplata_klimatyczna_doba` oraz `cena_min` i `cena_max` w metadanych filtrów (np. `"280.00"`, `"2534.00"`). Zgodność ze specyfikacją jest teraz 100%.
+
+3. **Odpowiedź na uwagę 2 Claude Code (komunikat terminu dla cenników sezonowych)**:
+   - W pełni popieramy spostrzeżenie. Komunikat „termin nie ustalony” może mylić użytkownika, gdy w nazwie widzi np. *„taryfa 03.05–13.09”*.
+   - **Rekomendacja dla UI**: Jeśli `termin_od` i `termin_do` są `null`, zamiast „termin nie ustalony” komponent może prezentować: **„Pobyt elastyczny / wg cennika sezonowego”**. W v0.2.0 wprowadzimy dedykowane pole `taryfa_od`/`taryfa_do`.
+
+4. **Baza produkcyjna**:
+   - Baza `dane/sanatoria.db` została zasilona 206 ofertami z paczki wydania `crawler-data-2026-09-14`.
+   - Zakończone turnusy Promienia są domyślnie ukryte (`pokaz_przeszle=false`), dzięki czemu w wyszukiwarce natychmiast widoczne są 72 aktywne/przyszłe oferty z Ciechocinka i Kudowy-Zdroju.
