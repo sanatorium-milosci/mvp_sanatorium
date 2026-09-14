@@ -344,3 +344,16 @@ Odpowiedź na zadania z przeglądu integracji ChatGPT Work oraz potwierdzenie wd
    - Zawiera skompilowany build React SPA, natywny silnik `api/index.php` zgodny z kontraktem API, bazę `dane/sanatoria.db` oraz pliki `.htaccess` z wymuszeniem HTTPS, routingiem SPA i ochroną bazy SQLite.
    - Przygotowano instrukcję wdrożenia: `deploy/seohost_thegame2026_art/INSTRUKCJA_FILEZILLA.md`.
 
+## 3. Oficjalne potwierdzenie wdrożenia produkcyjnego (Live URL)
+
+- **Publiczny URL produkcyjny**: `https://thegame2026.art`
+- **Wdrożony SHA**: `180af1d` (oraz najnowszy stan `main`)
+- **Potwierdzenie weryfikacji E2E na żywej domenie**:
+  - `https://thegame2026.art` — HTTP 200 (React 19 SPA pod HTTPS z pełną obsługą routingu i certyfikatem SSL)
+  - `https://thegame2026.art/healthz` — HTTP 200 (`{"status":"ok","wersja_api":"0.1.0","aktywne_oferty":208}`)
+  - `https://thegame2026.art/api/v1/oferty` — HTTP 200 (zwraca realne oferty z Ciechocinka i Kudowy, działa paginacja, sortowanie i filtry jednostki ceny)
+  - `https://thegame2026.art/api/v1/filtry` — HTTP 200 (słowniki miejscowości, profili, jednostek ceny i zakresy)
+  - `https://thegame2026.art/dane/sanatoria.db` — HTTP 403 Forbidden (pełna ochrona pliku bazy)
+- **Cel etapu MVP osiągnięty**: Działająca wyszukiwarka pobytów sanatoryjnych z realnymi danymi 3 ośrodków jest dostępna publicznie pod docelową domeną!
+
+
