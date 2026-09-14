@@ -1,0 +1,26 @@
+# deploy/Dockerfile.api
+FROM python:3.12-slim-bookworm
+
+# Instalacja uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+WORKDIR /app
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    UV_SYSTEM_PYTHON=1
+
+# Instalacja zależności
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev
+
+# Kopiowanie kodu aplikacji
+COPY packages/ ./packages/
+COPY README.md ./
+
+# Przygotowanie katalogów na dane i pliki out
+RUN mkdir -p dane out kopie
+
+EXPOSE 8000
+
+CMD ["uv", "run", "sanatoria-api", "--host", "0.0.0.0", "--port", "8000"]
