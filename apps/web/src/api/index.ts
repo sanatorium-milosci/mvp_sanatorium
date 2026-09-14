@@ -1,10 +1,12 @@
+import { createHttpOfertyApi } from './httpApi'
 import { mockOfertyApi } from './mockApi'
 import type { OfertyApi } from './types'
 
-// Jedyne miejsce, w którym trzeba podmienić implementację po publikacji
-// prawdziwego API w docs/api/ (backend: Antigravity/Michał).
-// Docelowo: import { httpOfertyApi } from './httpApi'
-export const ofertyApi: OfertyApi = mockOfertyApi
+// Ustaw VITE_API_BASE_URL (np. w apps/web/.env.local), aby przełączyć się
+// z danych mockowych na prawdziwy backend (docs/api/specyfikacja.md).
+const baseUrl = import.meta.env.VITE_API_BASE_URL as string | undefined
 
-export type { FiltryWyszukiwania, WynikWyszukiwania, OfertyApi } from './types'
+export const ofertyApi: OfertyApi = baseUrl ? createHttpOfertyApi(baseUrl) : mockOfertyApi
+
+export type { FiltryWyszukiwania, OfertyApi, Sortowanie } from './types'
 export { BladApi } from './types'

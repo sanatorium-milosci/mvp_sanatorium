@@ -20,19 +20,28 @@ npm run lint    # oxlint
 
 ## Stan obecny
 
-Interfejs działa **na danych mockowych** (`src/api/mockData.ts`) zgodnych z kontraktem
-`Oferta` z `packages/core/models.py` (wersja `0.1.0`): 3 ośrodki, 6 ofert, świadomie
-zawierające przypadki brzegowe (brak ceny, brak terminu, `cena_od=true`, `dostepny=null`).
+Interfejs działa **na danych mockowych** (`src/api/mockData.ts`), ale kształt danych,
+typy TS (`src/types/oferta.ts`) i warstwa API (`src/api/`) są już zgodne z realnym
+kontraktem backendu opublikowanym przez Antigravity/Michała w
+`docs/api/specyfikacja.md` (branch `backend/mvp-api-storage`): zagnieżdżone obiekty
+`osrodek`/`pakiet`/`cena`/`standard`/`udogodnienia`/`linki`, `id` liczbowe, paginacja
+(`stronicowanie`) i pole `szacowany_koszt_calkowity` liczone przez backend tylko gdy
+dane na to jednoznacznie pozwalają. 3 ośrodki, 6 ofert, świadomie z przypadkami
+brzegowymi (brak ceny, brak terminu, `cena_od=true`, `dostepny=null`).
 
 Warstwa dostępu do danych jest odizolowana w `src/api/`:
 
-- `src/api/types.ts` — kontrakt `OfertyApi` (metody `szukaj` i `pobierzSzczegoly`) oraz
-  typ filtrów `FiltryWyszukiwania`.
-- `src/api/mockApi.ts` — implementacja tymczasowa na danych mockowych.
-- `src/api/index.ts` — **jedyne miejsce**, w którym trzeba podmienić `mockOfertyApi` na
-  prawdziwego klienta HTTP, gdy backend (Antigravity/Michał) opublikuje kontrakt w
-  `docs/api/`. Reszta aplikacji importuje wyłącznie `ofertyApi` z `src/api`, więc podmiana
-  nie wymaga zmian w komponentach.
+- `src/api/types.ts` — kontrakt `OfertyApi` (`szukaj`, `pobierzSzczegoly`, `pobierzFiltry`)
+  oraz typ parametrów `FiltryWyszukiwania` (nazwy 1:1 z query params ze specyfikacji).
+- `src/api/mockApi.ts` — implementacja tymczasowa na danych mockowych (filtrowanie,
+  sortowanie, paginacja po stronie klienta).
+- `src/api/httpApi.ts` — gotowy klient HTTP wg `docs/api/specyfikacja.md`
+  (`GET /api/v1/oferty`, `/oferty/{id}`, `/filtry`).
+- `src/api/index.ts` — przełącza się automatycznie: jeśli ustawiona jest zmienna
+  środowiskowa `VITE_API_BASE_URL` (np. w `apps/web/.env.local`), używany jest
+  `httpApi`; w przeciwnym razie `mockApi`. Reszta aplikacji importuje wyłącznie
+  `ofertyApi` z `src/api`, więc podłączenie prawdziwego backendu nie wymaga zmian
+  w komponentach — wystarczy ustawić `VITE_API_BASE_URL`.
 
 ## Struktura
 

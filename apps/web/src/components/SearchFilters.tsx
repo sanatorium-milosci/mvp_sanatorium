@@ -18,13 +18,13 @@ export function SearchFilters({ filtry, miejscowosci, onZmiana, onWyczysc }: Pro
   return (
     <form className="filtry" onSubmit={(e) => e.preventDefault()} aria-label="Wyszukiwarka pobytów">
       <div className="filtry__pole filtry__pole--szeroka">
-        <label htmlFor="fraza">Szukaj</label>
+        <label htmlFor="q">Szukaj</label>
         <input
-          id="fraza"
+          id="q"
           type="search"
           placeholder="Ośrodek, miejscowość, nazwa pakietu…"
-          value={filtry.fraza ?? ''}
-          onChange={(e) => onZmiana({ ...filtry, fraza: e.target.value || undefined })}
+          value={filtry.q ?? ''}
+          onChange={(e) => onZmiana({ ...filtry, q: e.target.value || undefined })}
         />
       </div>
 
@@ -81,16 +81,16 @@ export function SearchFilters({ filtry, miejscowosci, onZmiana, onWyczysc }: Pro
       </div>
 
       <div className="filtry__pole">
-        <label htmlFor="cenaMax">Cena maks. (PLN)</label>
+        <label htmlFor="cena_max">Cena maks. (PLN)</label>
         <input
-          id="cenaMax"
+          id="cena_max"
           type="number"
           min={0}
           inputMode="numeric"
           placeholder="np. 3000"
-          value={filtry.cenaMax ?? ''}
+          value={filtry.cena_max ?? ''}
           onChange={(e) =>
-            onZmiana({ ...filtry, cenaMax: e.target.value ? Number(e.target.value) : undefined })
+            onZmiana({ ...filtry, cena_max: e.target.value ? Number(e.target.value) : undefined })
           }
         />
       </div>
@@ -100,8 +100,8 @@ export function SearchFilters({ filtry, miejscowosci, onZmiana, onWyczysc }: Pro
         <input
           id="terminOd"
           type="date"
-          value={filtry.terminOd ?? ''}
-          onChange={(e) => onZmiana({ ...filtry, terminOd: e.target.value || undefined })}
+          value={filtry.termin_od ?? ''}
+          onChange={(e) => onZmiana({ ...filtry, termin_od: e.target.value || undefined })}
         />
       </div>
 
@@ -110,8 +110,8 @@ export function SearchFilters({ filtry, miejscowosci, onZmiana, onWyczysc }: Pro
           <input
             id="tylkoDostepne"
             type="checkbox"
-            checked={filtry.tylkoDostepne ?? false}
-            onChange={(e) => onZmiana({ ...filtry, tylkoDostepne: e.target.checked || undefined })}
+            checked={filtry.tylko_dostepne ?? false}
+            onChange={(e) => onZmiana({ ...filtry, tylko_dostepne: e.target.checked || undefined })}
           />
           Tylko dostępne
         </label>

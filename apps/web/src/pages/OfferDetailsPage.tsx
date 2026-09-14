@@ -47,7 +47,7 @@ export function OfferDetailsPage() {
     )
   }
 
-  const { udogodnienia } = oferta
+  const { osrodek, pakiet, cena, standard, udogodnienia, linki } = oferta
 
   return (
     <article className="szczegoly-oferty">
@@ -56,65 +56,69 @@ export function OfferDetailsPage() {
       </Link>
 
       <header>
-        <h1>{oferta.osrodek_nazwa}</h1>
+        <h1>{osrodek.nazwa}</h1>
         <p className="szczegoly-oferty__miejscowosc">
-          {oferta.miejscowosc}
-          {oferta.wojewodztwo ? `, woj. ${oferta.wojewodztwo}` : ''}
+          {osrodek.miejscowosc}
+          {osrodek.wojewodztwo ? `, woj. ${osrodek.wojewodztwo}` : ''}
         </p>
-        <h2>{oferta.nazwa_pakietu}</h2>
+        <h2>{pakiet.nazwa}</h2>
       </header>
 
       <section className="szczegoly-oferty__cena-blok">
-        <p className="szczegoly-oferty__cena">
-          {formatujCene(oferta.cena, oferta.waluta, oferta.jednostka_ceny, oferta.cena_od)}
-        </p>
-        {oferta.dostepny === false && <span className="etykieta etykieta--brak">Brak miejsc</span>}
-        {oferta.dostepny === true && <span className="etykieta etykieta--ok">Dostępne</span>}
+        <p className="szczegoly-oferty__cena">{formatujCene(cena.wartosc, cena.waluta, cena.jednostka, cena.cena_od)}</p>
+        {pakiet.dostepny === false && <span className="etykieta etykieta--brak">Brak miejsc</span>}
+        {pakiet.dostepny === true && <span className="etykieta etykieta--ok">Dostępne</span>}
       </section>
+
+      {cena.szacowany_koszt_calkowity != null && (
+        <p className="szczegoly-oferty__koszt-calkowity">
+          Szacowany koszt całego pobytu: <strong>{formatujCene(cena.szacowany_koszt_calkowity, cena.waluta, null, false)}</strong>
+        </p>
+      )}
 
       <dl className="szczegoly-oferty__lista">
         <div>
           <dt>Termin</dt>
-          <dd>{formatujTermin(oferta.termin_od, oferta.termin_do)}</dd>
+          <dd>{formatujTermin(pakiet.termin_od, pakiet.termin_do)}</dd>
         </div>
         <div>
           <dt>Długość pobytu</dt>
           <dd>
-            {oferta.liczba_dni != null ? `${oferta.liczba_dni} dni` : 'nie ustalono'}
-            {oferta.liczba_nocy != null ? ` (${oferta.liczba_nocy} nocy)` : ''}
+            {pakiet.liczba_dni != null ? `${pakiet.liczba_dni} dni` : 'nie ustalono'}
+            {pakiet.liczba_nocy != null ? ` (${pakiet.liczba_nocy} nocy)` : ''}
           </dd>
         </div>
         <div>
           <dt>Wyżywienie</dt>
-          <dd>{oferta.wyzywienie ? WYZYWIENIE_ETYKIETY[oferta.wyzywienie] : 'nie ustalono'}</dd>
+          <dd>{standard.wyzywienie ? WYZYWIENIE_ETYKIETY[standard.wyzywienie] : 'nie ustalono'}</dd>
         </div>
         <div>
           <dt>Typ pokoju</dt>
-          <dd>{oferta.typ_pokoju ? TYP_POKOJU_ETYKIETY[oferta.typ_pokoju] : 'nie ustalono'}</dd>
+          <dd>{standard.typ_pokoju ? TYP_POKOJU_ETYKIETY[standard.typ_pokoju] : 'nie ustalono'}</dd>
         </div>
-        {oferta.doplata_jedynka != null && (
+        {cena.doplata_jedynka != null && (
           <div>
             <dt>Dopłata za jedynkę</dt>
-            <dd>{formatujCene(oferta.doplata_jedynka, oferta.waluta, null, false)}</dd>
+            <dd>{formatujCene(cena.doplata_jedynka, cena.waluta, null, false)}</dd>
           </div>
         )}
         <div>
           <dt>Opieka lekarska</dt>
-          <dd>{formatujTakNie(oferta.opieka_lekarska)}</dd>
+          <dd>{formatujTakNie(standard.opieka_lekarska)}</dd>
         </div>
-        {oferta.liczba_zabiegow_dziennie != null && (
+        {standard.liczba_zabiegow_dziennie != null && (
           <div>
             <dt>Zabiegi dziennie</dt>
-            <dd>{oferta.liczba_zabiegow_dziennie}</dd>
+            <dd>{standard.liczba_zabiegow_dziennie}</dd>
           </div>
         )}
       </dl>
 
-      {oferta.zabiegi.length > 0 && (
+      {standard.zabiegi.length > 0 && (
         <section>
           <h3>Zabiegi w ofercie</h3>
           <ul className="szczegoly-oferty__tagi">
-            {oferta.zabiegi.map((z) => (
+            {standard.zabiegi.map((z) => (
               <li key={z}>{z}</li>
             ))}
           </ul>
@@ -175,26 +179,26 @@ export function OfferDetailsPage() {
 
       <section className="szczegoly-oferty__kontakt">
         <h3>Kontakt i źródło</h3>
-        {oferta.telefon && (
+        {osrodek.telefon && (
           <p>
-            Telefon: <a href={`tel:${oferta.telefon}`}>{oferta.telefon}</a>
+            Telefon: <a href={`tel:${osrodek.telefon}`}>{osrodek.telefon}</a>
           </p>
         )}
         <p>
-          <a href={oferta.zrodlo.url} target="_blank" rel="noopener noreferrer">
+          <a href={linki.url_zrodla} target="_blank" rel="noopener noreferrer">
             Zobacz stronę ośrodka ↗
           </a>
         </p>
-        {oferta.url_rezerwacji && (
+        {linki.url_rezerwacji && (
           <p>
-            <a href={oferta.url_rezerwacji} target="_blank" rel="noopener noreferrer" className="przycisk-glowny">
+            <a href={linki.url_rezerwacji} target="_blank" rel="noopener noreferrer" className="przycisk-glowny">
               Przejdź do rezerwacji ↗
             </a>
           </p>
         )}
         <p className="szczegoly-oferty__pobrano">
-          Dane pobrane: {formatujDatePobrania(oferta.zrodlo.pobrano_o)}. Sprawdź aktualność ceny i dostępności
-          bezpośrednio u ośrodka.
+          Dane pobrane: {formatujDatePobrania(linki.pobrano_o)}. Sprawdź aktualność ceny i dostępności bezpośrednio
+          u ośrodka.
         </p>
       </section>
     </article>

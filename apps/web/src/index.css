@@ -232,6 +232,37 @@ button {
   color: var(--kolor-blad);
 }
 
+.stronicowanie {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  font-size: 0.9rem;
+  color: var(--kolor-tekst-przygaszony);
+}
+
+.stronicowanie button {
+  background: #fff;
+  border: 1px solid var(--kolor-obwodka);
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  color: var(--kolor-akcent-ciemny);
+}
+
+.stronicowanie button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.szczegoly-oferty__koszt-calkowity {
+  background: #f0f6f2;
+  border-radius: 6px;
+  padding: 0.6rem 0.85rem;
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+}
+
 /* Stany widoku */
 .stan-widoku {
   text-align: center;

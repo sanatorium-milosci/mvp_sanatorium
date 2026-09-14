@@ -1,5 +1,5 @@
-// Lustrzane odbicie packages/core/models.py — kontrakt Oferta, wersja 0.1.0.
-// Zmiany tego pliku muszą iść w parze ze zmianami kontraktu w packages/core/models.py.
+// Typy TS zgodne z realnym kontraktem API: docs/api/specyfikacja.md (backend, wersja kontraktu 0.1.0).
+// Odzwierciedlają odpowiedź JSON z GET /api/v1/oferty i GET /api/v1/oferty/{id}.
 
 export const WERSJA_KONTRAKTU = '0.1.0'
 
@@ -70,12 +70,41 @@ export const WYZYWIENIE_ETYKIETY: Record<Wyzywienie, string> = {
   all_inclusive: 'All inclusive',
 }
 
-export interface Zrodlo {
-  url: string
-  pobrano_o: string // ISO datetime
-  adapter: string
-  wersja_adaptera: string
-  hash_tresci: string
+export interface Osrodek {
+  klucz: string
+  nazwa: string
+  miejscowosc: string
+  wojewodztwo: string | null
+  nip: string | null
+  telefon: string | null
+}
+
+export interface Pakiet {
+  nazwa: string
+  liczba_dni: number | null
+  liczba_nocy: number | null
+  termin_od: string | null // ISO date
+  termin_do: string | null // ISO date
+  dostepny: boolean | null
+}
+
+export interface Cena {
+  wartosc: string | null // Decimal jako string, np. "2980.00"
+  waluta: string
+  jednostka: JednostkaCeny | null
+  cena_od: boolean
+  /** Liczony przez backend tylko gdy dane jednoznacznie na to pozwalają, inaczej null. */
+  szacowany_koszt_calkowity: string | null
+  doplata_jedynka: string | null
+  oplata_klimatyczna_doba: string | null
+}
+
+export interface Standard {
+  wyzywienie: Wyzywienie | null
+  typ_pokoju: TypPokoju | null
+  liczba_zabiegow_dziennie: number | null
+  zabiegi: string[]
+  opieka_lekarska: boolean | null
 }
 
 export interface Udogodnienia {
@@ -89,50 +118,48 @@ export interface Udogodnienia {
   odleglosc_od_centrum_m: number | null
 }
 
+export interface Linki {
+  url_rezerwacji: string | null
+  url_zrodla: string
+  pobrano_o: string // ISO datetime
+}
+
 export interface Oferta {
-  // --- identyfikacja ---
+  id: number
   adapter: string
   zrodlo_id: string
-
-  // --- ośrodek ---
-  osrodek_klucz: string
-  osrodek_nazwa: string
-  miejscowosc: string
-  wojewodztwo: string | null
-  nip: string | null
-
-  // --- pobyt ---
-  nazwa_pakietu: string
-  liczba_dni: number | null
-  liczba_nocy: number | null
-  termin_od: string | null // ISO date
-  termin_do: string | null // ISO date
-  dostepny: boolean | null
-
-  // --- cena ---
-  cena: string | null // Decimal jako string, bez utraty precyzji
-  jednostka_ceny: JednostkaCeny | null
-  waluta: string
-  cena_od: boolean
-
-  // --- co w cenie ---
-  wyzywienie: Wyzywienie | null
-  typ_pokoju: TypPokoju | null
-  doplata_jedynka: string | null
-  liczba_zabiegow_dziennie: number | null
-  zabiegi: string[]
-  opieka_lekarska: boolean | null
-  oplata_klimatyczna_doba: string | null
-
-  // --- klasyfikacja ---
+  osrodek: Osrodek
+  pakiet: Pakiet
+  cena: Cena
+  standard: Standard
   profile: ProfilLeczniczy[]
-
-  // --- reszta ---
   udogodnienia: Udogodnienia
-  telefon: string | null
-  url_rezerwacji: string | null
-  zrodlo: Zrodlo
+  linki: Linki
+}
 
-  // --- identyfikator dla frontendu (nadawany przez backend/mock) ---
-  id: string
+export interface Stronicowanie {
+  strona: number
+  na_stronie: number
+  razem: number
+  stron_razem: number
+}
+
+export interface ListaOfert {
+  elementy: Oferta[]
+  stronicowanie: Stronicowanie
+}
+
+/** Odpowiedź GET /api/v1/filtry — słowniki aktualnie dostępnych wariantów filtrów. */
+export interface SlownikiFiltrow {
+  miejscowosci: string[]
+  wojewodztwa: string[]
+  profile: ProfilLeczniczy[]
+  wyzywienie: Wyzywienie[]
+  typy_pokoju: TypPokoju[]
+  jednostki_ceny: JednostkaCeny[]
+  cena_min: string | null
+  cena_max: string | null
+  min_dni: number | null
+  max_dni: number | null
+  liczba_ofert_razem: number
 }
