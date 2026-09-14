@@ -123,6 +123,13 @@ button {
   color: var(--kolor-tekst);
 }
 
+.filtry__podpowiedz {
+  margin: 0.3rem 0 0;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--kolor-tekst-przygaszony);
+}
+
 .filtry__wyczysc {
   justify-self: start;
   background: none;

@@ -75,4 +75,19 @@ describe('SearchPage', () => {
     await waitFor(() => expect(screen.getByText(/Znaleziono 7 ofert/)).toBeInTheDocument())
     expect(screen.getByText('Turnus letni 7 dni (zakończony)')).toBeInTheDocument()
   })
+
+  it('filtruje po jednostce ceny i chowa podpowiedź o porównywalności po wyborze', async () => {
+    const user = userEvent.setup()
+    renderSearchPage()
+
+    await waitFor(() => expect(screen.getByText(/Znaleziono 6 ofert/)).toBeInTheDocument())
+    expect(screen.getByText(/limit porównuje kwoty za osobodobę, turnus i cały pokój razem/)).toBeInTheDocument()
+
+    await user.selectOptions(screen.getByLabelText('Jednostka ceny'), 'turnus_osoba')
+
+    await waitFor(() => expect(screen.getByText(/Znaleziono 4 ofert/)).toBeInTheDocument())
+    expect(
+      screen.queryByText(/limit porównuje kwoty za osobodobę, turnus i cały pokój razem/),
+    ).not.toBeInTheDocument()
+  })
 })
